@@ -1,4 +1,4 @@
-"""import os
+import os
 import pickle
 
 import kagglehub
@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from PIL import Image
-from sklearn.decomposition import PCA
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split, cross_val_score, KFold, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
@@ -69,19 +68,23 @@ def evaluate_model(best_knn, x_test, y_test):
     return accuracy, y_pred, cm
 
 
-def plot_confusion_matrix(cm):
+def plot_confusion_matrix(cm, save_path):
     plt.figure(figsize=(8, 6))
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=range(10), yticklabels=range(10))
     plt.title("Confusion Matrix - KNN Classifier with GridSearch")
     plt.xlabel("Predicted")
     plt.ylabel("True")
+
+    # Salva l'immagine nel percorso specificato
+    plt.savefig(save_path)
+
+    # Mostra la matrice di confusione
     plt.show()
 
 
 def print_classification_report(y_test, y_pred):
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred))
-
 
 
 def plot_images_with_predictions(x_test, y_test, y_pred, num_images=10):
@@ -106,6 +109,7 @@ def save_model(model, filename):
 
 if __name__ == "__main__":
     dataset_path = load_dataset()
+    print(f"Dataset path: {dataset_path}")
 
     x, y = preprocess_images(dataset_path)
 
@@ -126,9 +130,8 @@ if __name__ == "__main__":
 
     accuracy, y_pred, cm = evaluate_model(best_knn, x_test, y_test)
     print(f"Accuracy of the model with GridSearch: {accuracy:.2%}")
-    plot_images_with_predictions(x_test, y_test, y_pred, num_images=10)
-    plot_confusion_matrix(cm)
+    # plot_images_with_predictions(x_test, y_test, y_pred, num_images=10)
+    plot_confusion_matrix(cm, "confusion_matrix.png")
     print_classification_report(y_test, y_pred)
 
-    save_model(best_knn, '../knn.pkl')
-"""
+    save_model(best_knn, '../../knn.pkl')
